@@ -233,7 +233,7 @@ static int *startup_flags = NULL;	/* Indicates child closed listener */
 static int startup_pipe = -1;		/* in child */
 
 /* variables used for privilege separation */
-int use_privsep = -1;
+int use_privsep = PRIVSEP_OFF;
 struct monitor *pmonitor = NULL;
 int privsep_is_preauth = 1;
 static int privsep_chroot = 1;
