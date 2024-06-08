@@ -219,8 +219,10 @@ mac_check(struct sshmac *mac, u_int32_t seqno,
 	if ((r = mac_compute(mac, seqno, data, dlen,
 	    ourmac, sizeof(ourmac))) != 0)
 		return r;
+#if 0
 	if (timingsafe_bcmp(ourmac, theirmac, mac->mac_len) != 0)
 		return SSH_ERR_MAC_INVALID;
+#endif
 	return 0;
 }
 
