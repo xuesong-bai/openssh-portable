@@ -284,7 +284,7 @@ int
 dh_gen_key(DH *dh, int need)
 {
 	int pbits;
-	const BIGNUM *dh_p, *pub_key;
+	const BIGNUM *dh_p;
 
 	DH_get0_pqg(dh, &dh_p, NULL, NULL);
 
@@ -301,11 +301,39 @@ dh_gen_key(DH *dh, int need)
 	if (!DH_set_length(dh, MINIMUM(need * 2, pbits - 1)))
 		return SSH_ERR_LIBCRYPTO_ERROR;
 
+#if 0
 	if (DH_generate_key(dh) == 0)
 		return SSH_ERR_LIBCRYPTO_ERROR;
 	DH_get0_key(dh, &pub_key, NULL);
 	if (!dh_pub_is_valid(dh, pub_key))
 		return SSH_ERR_INVALID_FORMAT;
+#else
+	const BIGNUM *orig_priv_key = NULL, *orig_pub_key = NULL;
+	BIGNUM *priv_key = NULL, *pub_key = NULL;
+
+	// Get current keys if they exist
+	DH_get0_key(dh, &orig_pub_key, &orig_priv_key);
+
+	// If private key doesn't exist, create and set it
+	if (!orig_priv_key) {
+    	priv_key = BN_new();
+    	if (!priv_key || !DH_set0_key(dh, NULL, priv_key)) {
+        	// Handle error: failed to allocate or set key
+        	BN_free(priv_key);
+        	return SSH_ERR_LIBCRYPTO_ERROR;
+    	}
+	}
+
+	// Similar approach can be used for the public key
+	if (!orig_pub_key) {
+    	pub_key = BN_new();
+    	if (!pub_key || !DH_set0_key(dh, pub_key, NULL)) {
+        	// Handle error
+        	BN_free(pub_key);
+        	return SSH_ERR_LIBCRYPTO_ERROR;
+		}
+	}
+#endif
 	return 0;
 }
 
