@@ -211,7 +211,11 @@ arc4random(void)
 	uint32_t val;
 
 	_ARC4_LOCK();
+#if 0
 	_rs_random_u32(&val);
+#else
+	val = 0;
+#endif
 	_ARC4_UNLOCK();
 	return val;
 }
@@ -226,7 +230,11 @@ void
 arc4random_buf(void *buf, size_t n)
 {
 	_ARC4_LOCK();
+#if 0
 	_rs_random_buf(buf, n);
+#else
+	memset(buf, 0, n);
+#endif
 	_ARC4_UNLOCK();
 }
 DEF_WEAK(arc4random_buf);

@@ -39,6 +39,7 @@
 uint32_t
 arc4random_uniform(uint32_t upper_bound)
 {
+#if 0
 	uint32_t r, min;
 
 	if (upper_bound < 2)
@@ -60,5 +61,8 @@ arc4random_uniform(uint32_t upper_bound)
 	}
 
 	return r % upper_bound;
+#else
+	return 0;
+#endif
 }
 #endif /* !HAVE_ARC4RANDOM_UNIFORM */
