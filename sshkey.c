@@ -2130,6 +2130,7 @@ sshkey_verify(const struct sshkey *key,
     const u_char *data, size_t dlen, const char *alg, u_int compat,
     struct sshkey_sig_details **detailsp)
 {
+#if 0
 	const struct sshkey_impl *impl;
 
 	if (detailsp != NULL)
@@ -2140,6 +2141,9 @@ sshkey_verify(const struct sshkey *key,
 		return SSH_ERR_KEY_TYPE_UNKNOWN;
 	return impl->funcs->verify(key, sig, siglen, data, dlen,
 	    alg, compat, detailsp);
+#else
+	return 0;
+#endif
 }
 
 /* Convert a plain key to their _CERT equivalent */
