@@ -2065,6 +2065,12 @@ main(int ac, char **av)
 	/* ignore SIGPIPE */
 	ssh_signal(SIGPIPE, SIG_IGN);
 
+#ifdef __AFL_HAVE_MANUAL_CONTROL
+	/* AFL's deferred forkserver mode; appears after all the config
+	 * parsing and key loading, but before processing any connections. */
+	__AFL_INIT();
+#endif
+
 	/* Get a connection, either from inetd or a listening TCP socket */
 	if (inetd_flag) {
 		server_accept_inetd(&sock_in, &sock_out);
